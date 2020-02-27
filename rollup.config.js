@@ -1,13 +1,13 @@
 import resolve from 'rollup-plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 import commonjs from 'rollup-plugin-commonjs';
-
+import replace from 'rollup-plugin-replace';
 const resolveConfig = resolve({
   customResolveOptions: {
+    '@formatjs/intl-pluralrules': './packages/intl-pluralrules',
+    '@formatjs/intl-relativetimeformat': './packages/intl-relativetimeformat',
+    '@formatjs/intl-utils': './packages/intl-utils',
     'intl-messageformat': './packages/intl-messageformat',
-    'intl-messageformat-parser': './packages/intl-messageformat-parser',
-    'intl-relativeformat': './packages/intl-relativeformat',
-    'intl-relativetimeformat': './packages/intl-relativetimeformat'
   }
 })
 export default [
@@ -18,6 +18,18 @@ export default [
       file: 'tests/browser.js',
       format: 'umd'
     },
-    plugins: [resolveConfig, typescript({rootDir: __dirname, module: 'esnext'}) , commonjs()]
+    plugins: [
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('test'),
+        'process.version': JSON.stringify('')
+      }),
+      resolveConfig, 
+      typescript({
+      tsconfigDefaults: {
+        compilerOptions: {
+          declaration: false
+        }
+      }
+    }) , commonjs()]
   }
 ];

@@ -1,8 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "lib",
-        "rootDir": "src"
-    },
-    "include": ["src/*.ts"]
+        "baseUrl": ".",
+        "paths": {
+            "intl-format-cache": ["../intl-format-cache"]
+        }
+    }
 }

@@ -1,6 +1,6 @@
 {
   "name": "intl-messageformat",
-  "version": "4.0.0",
+  "version": "7.8.4",
   "description": "Formats ICU Message strings with number, date, plural, and select placeholders to create localized messages.",
   "keywords": [
     "i18n",
@@ -21,29 +21,42 @@
     "Long Ho <holevietlong@gmail.com"
   ],
   "bugs": {
-    "url": "https://github.com/formatjs/intl-messageformat/issues"
+    "url": "https://github.com/formatjs/formatjs/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:formatjs/intl-messageformat.git"
+    "url": "git@github.com:formatjs/formatjs.git"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "module": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "types": "lib/intl-messageformat.d.ts",
   "dependencies": {
-    "intl-messageformat-parser": "^1.6.5"
+    "intl-format-cache": "^4.2.21",
+    "intl-messageformat-parser": "^3.6.4"
   },
+  "files": [
+    "dist",
+    "lib",
+    "src"
+  ],
+  "devDependencies": {
+    "@formatjs/intl-pluralrules": "^1.5.2"
+  },
+  "sideEffects": false,
   "scripts": {
+    "benchmark": "ts-node --project ./tsconfig.cjs.json tests/benchmark",
+    "build": "npm run tsc && npm run rollup",
     "clean": "rimraf dist lib",
-    "benchmark": "ts-node --project tests/tsconfig.json tests/benchmark",
-    "build": "tsc && tsc -p tsconfig.cjs.json && rollup -c rollup.config.js",
-    "test": "mocha --opts ../../mocha.opts tests/index.ts",
+    "karma:ci": "karma start karma.conf-ci.js",
     "karma:local": "karma start karma.conf.js",
-    "karma:ci": "karma start karma.conf-ci.js"
+    "rollup": "rollup -c rollup.config.js",
+    "test": "cross-env TZ=UTC NODE_ICU_DATA=../../node_modules/full-icu TS_NODE_PROJECT=tsconfig.cjs.json mocha --opts ../../mocha.opts -r tests/setup.js tests/index.ts",
+    "tsc": "tsc -p src/tsconfig.json && tsc -p src/tsconfig.cjs.json && api-extractor run --local"
   },
-  "homepage": "https://github.com/formatjs/intl-messageformat",
+  "homepage": "https://github.com/formatjs/formatjs",
   "directories": {
     "test": "tests"
   },
-  "license": "BSD-3-Clause"
+  "license": "BSD-3-Clause",
+  "gitHead": "a7842673d8ad205171ad7c8cb8bb2f318b427c0c"
 }

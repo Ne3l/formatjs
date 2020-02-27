@@ -2,9 +2,14 @@ artifacts
 .nyc_output
 coverage
 dist
+lib
 node_modules
 *.log
 *.tgz
-package-lock.json
 functional-tests/
 *.tsbuildinfo
+.rpt2_cache
+test262
+temp
+dist-es6
+polyfill-locales.js

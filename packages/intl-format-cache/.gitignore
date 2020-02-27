@@ -1,7 +1,5 @@
-lib/
 node_modules/
 .nyc_output
-dist
 tests/*.js
 tests/*.js.map
 tests/*.d.ts

@@ -1,12 +1,15 @@
 # babel-plugin-react-intl
 
 Extracts string messages for translation from modules that use [React Intl][].
+
 ## Dependencies
 
 ### React Intl
+
 This Babel plugin works with React Intl v2.x
 
 ### Babel
+
 - **3.x** of this plugin works with Babel 7
 - **2.x** works with Babel 6
 - **1.x** works with Babel 5
@@ -32,9 +35,12 @@ If a message descriptor has a `description`, it'll be removed from the source af
 ```json
 {
   "plugins": [
-    ["react-intl", {
+    [
+      "react-intl",
+      {
         "messagesDir": "./build/messages/"
-    }]
+      }
+    ]
   ]
 }
 ```
@@ -43,15 +49,13 @@ If a message descriptor has a `description`, it'll be removed from the source af
 
 - **`messagesDir`**: The target location where the plugin will output a `.json` file corresponding to each component from which React Intl messages were extracted. If not provided, the extracted message descriptors will only be accessible via Babel's API.
 
-- **`enforceDescriptions`**: Whether message declarations _must_ contain a `description` to provide context to translators. Defaults to: `false`.
-
 - **`extractSourceLocation`**: Whether the metadata about the location of the message in the source file should be extracted. If `true`, then `file`, `start`, and `end` fields will exist for each extracted message descriptors. Defaults to `false`.
 
 - **`moduleSourceName`**: The ES6 module source name of the React Intl package. Defaults to: `"react-intl"`, but can be changed to another name/path to React Intl.
 
 - **`overrideIdFn`**: A function with the signature `(id: string, defaultMessage: string, description: string|object) => string` which allows you to override the ID both in the extracted javascript and messages.
 
-- **`removeDefaultMessage`**: Remove `defaultMessage` field in generated js after extraction. 
+- **`removeDefaultMessage`**: Remove `defaultMessage` field in generated js after extraction.
 
 - **`additionalComponentNames`**: Additional component names to extract messages from, e.g: `['FormattedFooBarMessage']`. **NOTE**: By default we check for the fact that `FormattedMessage` & `FormattedHTMLMessage` are imported from `moduleSourceName` to make sure variable alias works. This option does not do that so it's less safe.
 
@@ -63,8 +67,8 @@ The extract message descriptors are available via the `metadata` property on the
 
 ```javascript
 require('@babel/core').transform('code', {
-  plugins: ['react-intl']
-}) // => { code, map, ast, metadata['react-intl'].messages };
+  plugins: ['react-intl'],
+}); // => { code, map, ast, metadata['react-intl'].messages };
 ```
 
-[React Intl]: http://formatjs.io/react/
+[react intl]: http://formatjs.io/react/

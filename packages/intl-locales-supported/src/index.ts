@@ -3,8 +3,14 @@
  * Copyrights licensed under the New BSD License.
  * See the accompanying LICENSE file for terms.
  */
+
+type IntlConstructor = {
+  supportedLocalesOf(locales: string | string[], options?: any): string[];
+};
+
 export default function areIntlLocalesSupported(
-  locales: string | string[]
+  locales: string | string[],
+  constructorsToCheck?: Array<IntlConstructor>
 ): boolean {
   if (typeof Intl === 'undefined') {
     return false;
@@ -18,13 +24,19 @@ export default function areIntlLocalesSupported(
     locales = [locales];
   }
 
-  const intlConstructors = [
-    Intl.Collator,
+  let intlConstructors = constructorsToCheck || [
     Intl.DateTimeFormat,
-    Intl.NumberFormat
-  ].filter(Boolean);
+    Intl.NumberFormat,
+    Intl.PluralRules,
+  ];
 
-  if (intlConstructors.length === 0) {
+  intlConstructors = intlConstructors.filter(Boolean);
+
+  if (
+    intlConstructors.length === 0 ||
+    (constructorsToCheck &&
+      intlConstructors.length !== constructorsToCheck.length)
+  ) {
     return false;
   }
 

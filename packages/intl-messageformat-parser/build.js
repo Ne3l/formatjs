@@ -1,14 +1,71 @@
 #!/usr/bin/env node
-const peg = require('pegjs')
-const fs = require('fs')
-const {outputFileSync} = require('fs-extra')
-const grammar = fs.readFileSync('./src/parser.pegjs', 'utf-8')
+const peg = require('pegjs');
+const tspegjs = require('ts-pegjs');
+const fs = require('fs');
+const { outputFileSync } = require('fs-extra');
+const grammar = fs.readFileSync('./src/parser.pegjs', 'utf-8');
 
-// ES6
-outputFileSync('src/parser.js', `export default ${peg.generate(grammar, {output: 'source'})}`)
+// TS
+const srcString = peg.generate(grammar, {
+  plugins: [tspegjs],
+  output: 'source',
+  tspegjs: {
+    customHeader: `
+import {
+    MessageFormatElement,
+    LiteralElement,
+    ArgumentElement,
+    NumberElement,
+    DateElement,
+    TimeElement,
+    SelectElement,
+    PluralElement,
+    PoundElement,
+    PluralOrSelectOption,
+    NumberSkeleton,
+    DateTimeSkeleton,
+    SKELETON_TYPE,
+    TYPE,
+} from './types'`
+  },
+  returnTypes: {
+    argument: 'string',
+    ws: 'string',
+    digit: 'string',
+    hexDigit: 'string',
+    quoteEscapedChar: 'string',
+    apostrophe: 'string',
+    escape: 'string',
+    char: 'string',
+    chars: 'string',
+    varName: 'string',
+    number: 'number',
+    start: 'MessageFormatElement[]',
+    message: 'MessageFormatElement[]',
+    literalElement: 'LiteralElement',
+    argumentElement: 'ArgumentElement',
+    selectElement: 'SelectElement',
+    pluralElement: 'PluralElement',
+    poundElement: 'PoundElement',
+    selectOption: 'PluralOrSelectOption',
+    pluralOption: 'PluralOrSelectOption',
+    numberSkeleton: 'NumberSkeleton',
+    dateTimeSkeleton: 'DateTimeSkeleton',
+    numberArgStyle: 'string | NumberSkeleton',
+    dateTimeArgStyle: 'string | DateTimeSkeleton',
+    simpleFormatElement: `
+| NumberElement
+| DateElement
+| TimeElement
+`
+  }
+});
 
-// Globals
-outputFileSync('dist/parser.js', peg.generate(grammar, {output: 'source', format: 'globals', exportVar: 'IntlMessageFormatParser'}))
-
-// CJS
-outputFileSync('lib/parser.js', peg.generate(grammar, {output: 'source', format: 'commonjs'}))
+const REGEX = /ParseFunction = \((.*?)\) => (any);/g;
+const PARSE_EXPORT = /export const parse:/g;
+outputFileSync(
+  'src/parser.ts',
+  srcString
+    .replace(REGEX, 'ParseFunction = ($1) => MessageFormatElement[];')
+    .replace(PARSE_EXPORT, 'export const pegParse:')
+);
